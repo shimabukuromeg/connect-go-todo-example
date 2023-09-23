@@ -1,0 +1,23 @@
+title: シナリオテスト
+plugins:
+  grpc: todo.so
+vars:
+  client: "{{plugins.grpc.NewTodoServiceClient()}}"
+steps:
+  - title: Create task
+    protocol: gRPC
+    request:
+      client: "{{vars.client}}"
+      method: CreateTask
+      body:
+        name: "太郎"
+        status: "STATUS_TODO"
+    expect:
+      code: 0
+      body:
+        id: "{{response.id}}"
+        name: "太郎"
+        status: "STATUS_TODO"
+    bind:
+      vars:
+        id: "{{response.id}}"
