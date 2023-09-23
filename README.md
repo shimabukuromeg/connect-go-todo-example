@@ -98,3 +98,8 @@ name (TYPE_STRING) => タスク1
 }
 
 ```
+
+zennのscrapに書いた作業ログ
+
+https://zenn.dev/shimabukuromeg/scraps/77c777de326a83
+
