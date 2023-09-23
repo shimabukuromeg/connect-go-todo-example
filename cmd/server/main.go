@@ -23,11 +23,35 @@ func (s *TodoServer) CreateTask(
 	ctx context.Context,
 	req *connect.Request[todov1.CreateTaskRequest],
 ) (*connect.Response[todov1.CreateTaskResponse], error) {
-    log.Println("Request headers: ", req.Header())
-	// TODO: Implement this method.
-	res := connect.NewResponse(&todov1.CreateTaskResponse{})
-    res.Header().Set("CreateTask-Version", "v1")
-    return res, nil
+	s.nextID++
+	id := s.nextID
+
+	newTodo := &todov1.TodoItem{
+		Id:     uint64(id),
+		Name:   req.Msg.Name,
+		Status: req.Msg.Status,
+	}
+
+	// TODOを追加
+	s.todos.Store(newTodo.Id, newTodo)
+	log.Println("TODOを追加")
+
+	log.Println("Request headers: ", req.Header())
+	res := connect.NewResponse(&todov1.CreateTaskResponse{
+		Id:     newTodo.Id,
+		Name:   newTodo.Name,
+		Status: newTodo.Status,
+	})
+
+	// TODO一覧
+	log.Println("TODO一覧")
+	s.todos.Range(func(key, value interface{}) bool {
+		log.Printf("key is %d, value is %v", key, value)
+		return true
+	})
+
+	res.Header().Set("CreateTask-Version", "v1")
+	return res, nil
 }
 
 func (s *TodoServer) UpdateTaskStatus(
