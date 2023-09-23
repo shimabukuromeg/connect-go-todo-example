@@ -21,3 +21,44 @@ steps:
     bind:
       vars:
         id: "{{response.id}}"
+
+  - title: Create task 2
+    protocol: gRPC
+    request:
+      client: "{{vars.client}}"
+      method: CreateTask
+      body:
+        name: "次郎"
+        status: "STATUS_TODO"
+    expect:
+      code: 0
+      body:
+        id: "{{response.id}}"
+        name: "次郎"
+        status: "STATUS_TODO"
+
+  - title: Update task status
+    protocol: gRPC
+    request:
+      client: "{{vars.client}}"
+      method: UpdateTaskStatus
+      body:
+        id: "{{vars.id}}"
+        status: "STATUS_DONE"
+    expect:
+      code: 0
+      body:
+        id: "{{vars.id}}"
+        status: "STATUS_DONE"
+
+  - title: Delete task
+    protocol: gRPC
+    request:
+      client: "{{vars.client}}"
+      method: DeleteTask
+      body:
+        id: "{{vars.id}}"
+    expect:
+      code: 0
+      body:
+        id: "{{response.id}}"
